@@ -25,9 +25,9 @@ public class NaeDocPojo {
 	private static boolean toBase64 = true;
 	private static boolean testBase64 = false;
 
-	public NaeListFile doReadDocs(NaeListFile listFileReq) {
-		logger.log(Level.INFO, "doReadDocs - begin");
-		listFileReq = this.validateRequest(listFileReq);
+	public NaeListFile postDocsAndGetTexts(NaeListFile listFileReq) {
+		logger.log(Level.INFO, "postDocsAndGetTexts - begin");
+		listFileReq = this.validatePostDocsAndGetTexts(listFileReq);
 		if (listFileReq.getError() != null)
 			return listFileReq;
 		try {
@@ -42,18 +42,41 @@ public class NaeDocPojo {
 				fileReq.setBase64(null);
 				fileReq.setListParagraph(listParagraph);
 			}
-			logger.log(Level.INFO, "doReadDocs - end");
+			logger.log(Level.INFO, "postDocsAndGetTexts - end");
 		} catch (UnsupportedEncodingException e) {
-			logger.log(Level.SEVERE, "doReadDocs - error", e);
+			logger.log(Level.SEVERE, "postDocsAndGetTexts - error", e);
 			listFileReq.setError("Errore nella lettura del file in base 64. " + e.getClass().getName() + ". " + (e.getMessage() == null ? "" : e.getMessage()));
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "doReadDocs - error", e);
+			logger.log(Level.SEVERE, "postDocsAndGetTexts - error", e);
 			listFileReq.setError("Errore generico. " + e.getClass().getName() + ". " + (e.getMessage() == null ? "" : e.getMessage()));
 		}
 		return listFileReq;
 	}
 
-	private NaeListFile validateRequest(NaeListFile listFileReq) {
+	public NaeListFile postTextsAndGetAnnotations(NaeListFile listFileReq) {
+		// TODO
+		// TODO
+		logger.log(Level.INFO, "postTextsAndGetAnnotations - begin");
+		listFileReq = this.validatePostTextsAndGetAnnotations(listFileReq);
+		if (listFileReq.getError() != null)
+			return listFileReq;
+		logger.log(Level.SEVERE, "postTextsAndGetAnnotations - error");
+		listFileReq.setError("Non implementato");
+		return listFileReq;
+	}
+
+	public NaeListFile postAnnotationsAndGetDocs(NaeListFile listFileReq) {
+		// TODO
+		logger.log(Level.INFO, "postAnnotationsAndGetDocs - begin");
+		listFileReq = this.validatePostAnnotationsAndGetDocs(listFileReq);
+		if (listFileReq.getError() != null)
+			return listFileReq;
+		logger.log(Level.SEVERE, "postAnnotationsAndGetDocs - error");
+		listFileReq.setError("Non implementato");
+		return listFileReq;
+	}
+
+	private NaeListFile validateRequestAndList(NaeListFile listFileReq) {
 		if (listFileReq == null) {
 			listFileReq = new NaeListFile();
 			listFileReq.setError("Request non trovata");
@@ -64,14 +87,71 @@ public class NaeDocPojo {
 			listFileReq.setError("File non trovati");
 			return listFileReq;
 		}
+		return listFileReq;
+	}
+
+	private NaeListFile validatePostDocsAndGetTexts(NaeListFile listFileReq) {
+		listFileReq = this.validateRequestAndList(listFileReq);
+		if (listFileReq.getError() != null)
+			return listFileReq;
 		for (int i = 0; i < listFileReq.getListFile().size(); i++) {
 			NaeFile file = listFileReq.getListFile().get(i);
 			if (file == null) {
 				listFileReq.setError("Non trovato il file nella posizione " + i);
-			} else if (file.getId() < 1) {
-				listFileReq.setError("File con id non valido (" + file.getId() + ") nella posizione " + i);
 			} else if (file.getBase64() == null || file.getBase64().isEmpty()) {
 				listFileReq.setError("File con base64 non valida (" + file.getBase64() + ") nella posizione " + i);
+			} else if (file.getName() == null || file.getName().isEmpty()) {
+				listFileReq.setError("File con name non valido (" + file.getName() + ") nella posizione " + i);
+			} else if (file.getSize() == null || file.getSize().isEmpty()) {
+				listFileReq.setError("File con size non valido (" + file.getSize() + ") nella posizione " + i);
+			} else if (file.getType() == null || file.getType().isEmpty()) {
+				listFileReq.setError("File con type non valido (" + file.getType() + ") nella posizione " + i);
+			} else if (file.getLastModifiedDate() == null || file.getLastModifiedDate().isEmpty()) {
+				listFileReq.setError("File con lastModifiedDate non valida (" + file.getType() + ") nella posizione " + i);
+			}
+			if (listFileReq.getError() != null)
+				return listFileReq;
+		}
+		return listFileReq;
+	}
+
+	private NaeListFile validatePostTextsAndGetAnnotations(NaeListFile listFileReq) {
+		listFileReq = this.validateRequestAndList(listFileReq);
+		if (listFileReq.getError() != null)
+			return listFileReq;
+		for (int i = 0; i < listFileReq.getListFile().size(); i++) {
+			NaeFile file = listFileReq.getListFile().get(i);
+			if (file == null) {
+				listFileReq.setError("Non trovato il file nella posizione " + i);
+			} else if (file.getListParagraph().isEmpty()) {
+				listFileReq.setError("Non trovata la lista dei paragrafi nella posizione " + i);
+			} else if (file.getName() == null || file.getName().isEmpty()) {
+				listFileReq.setError("File con name non valido (" + file.getName() + ") nella posizione " + i);
+			} else if (file.getSize() == null || file.getSize().isEmpty()) {
+				listFileReq.setError("File con size non valido (" + file.getSize() + ") nella posizione " + i);
+			} else if (file.getType() == null || file.getType().isEmpty()) {
+				listFileReq.setError("File con type non valido (" + file.getType() + ") nella posizione " + i);
+			} else if (file.getLastModifiedDate() == null || file.getLastModifiedDate().isEmpty()) {
+				listFileReq.setError("File con lastModifiedDate non valida (" + file.getType() + ") nella posizione " + i);
+			}
+			if (listFileReq.getError() != null)
+				return listFileReq;
+		}
+		return listFileReq;
+	}
+
+	private NaeListFile validatePostAnnotationsAndGetDocs(NaeListFile listFileReq) {
+		listFileReq = this.validateRequestAndList(listFileReq);
+		if (listFileReq.getError() != null)
+			return listFileReq;
+		for (int i = 0; i < listFileReq.getListFile().size(); i++) {
+			NaeFile file = listFileReq.getListFile().get(i);
+			if (file == null) {
+				listFileReq.setError("Non trovato il file nella posizione " + i);
+			} else if (file.getListParagraph().isEmpty()) {
+				listFileReq.setError("Non trovata la lista dei paragrafi nella posizione " + i);
+			} else if (file.getListAnnotation().isEmpty()) {
+				listFileReq.setError("Non trovata la lista delle annotazioni nella posizione " + i);
 			} else if (file.getName() == null || file.getName().isEmpty()) {
 				listFileReq.setError("File con name non valido (" + file.getName() + ") nella posizione " + i);
 			} else if (file.getSize() == null || file.getSize().isEmpty()) {

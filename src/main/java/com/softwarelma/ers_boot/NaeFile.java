@@ -7,9 +7,9 @@ import java.util.List;
 public class NaeFile implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private long id;
 	private String base64;
 	private List<String> listParagraph;
+	private List<NaeAnnotation> listAnnotation;
 	private String name;
 	private String size;
 	private String type;
@@ -17,13 +17,14 @@ public class NaeFile implements Serializable {
 
 	public NaeFile() {
 		this.listParagraph = new ArrayList<String>();
+		this.listAnnotation = new ArrayList<NaeAnnotation>();
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
@@ -36,17 +37,12 @@ public class NaeFile implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		NaeFile other = (NaeFile) obj;
-		if (id != other.id)
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
 			return false;
 		return true;
-	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	public String getBase64() {
@@ -58,7 +54,7 @@ public class NaeFile implements Serializable {
 	}
 
 	public List<String> getListParagraph() {
-		if (listParagraph == null)
+		if (this.listParagraph == null)
 			this.listParagraph = new ArrayList<String>();
 		return this.listParagraph;
 	}
@@ -67,6 +63,18 @@ public class NaeFile implements Serializable {
 		this.listParagraph = new ArrayList<String>();
 		if (listParagraph != null)
 			this.listParagraph.addAll(listParagraph);
+	}
+
+	public List<NaeAnnotation> getListAnnotation() {
+		if (this.listAnnotation == null)
+			this.listAnnotation = new ArrayList<NaeAnnotation>();
+		return this.listAnnotation;
+	}
+
+	public void setListAnnotation(List<NaeAnnotation> listAnnotation) {
+		this.listAnnotation = new ArrayList<NaeAnnotation>();
+		if (listAnnotation != null)
+			this.listAnnotation.addAll(listAnnotation);
 	}
 
 	public String getName() {

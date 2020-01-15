@@ -29,11 +29,29 @@ public class NaeController {
 	}
 
 	@CrossOrigin(origins = CORS_ORIGIN)
-	@PostMapping(path = "/rest/postFiles", consumes = "application/json", produces = "application/json")
-	public NaeListFile postNew(HttpServletResponse httpServletResponse, @RequestBody NaeListFile listFileReq) {
+	@PostMapping(path = "/rest/postDocsAndGetTexts", consumes = "application/json", produces = "application/json")
+	public NaeListFile postDocsAndGetTexts(HttpServletResponse httpServletResponse, @RequestBody NaeListFile listFileReq) {
 		// this.addHeaders(httpServletResponse);
 		NaeDocPojo docPojo = new NaeDocPojo();
-		NaeListFile listFileResp = docPojo.doReadDocs(listFileReq);
+		NaeListFile listFileResp = docPojo.postDocsAndGetTexts(listFileReq);
+		return listFileResp;
+	}
+
+	@CrossOrigin(origins = CORS_ORIGIN)
+	@PostMapping(path = "/rest/postTextsAndGetAnnotations", consumes = "application/json", produces = "application/json")
+	public NaeListFile postTextsAndGetAnnotations(HttpServletResponse httpServletResponse, @RequestBody NaeListFile listFileReq) {
+		// this.addHeaders(httpServletResponse);
+		NaeDocPojo docPojo = new NaeDocPojo();
+		NaeListFile listFileResp = docPojo.postTextsAndGetAnnotations(listFileReq);
+		return listFileResp;
+	}
+
+	@CrossOrigin(origins = CORS_ORIGIN)
+	@PostMapping(path = "/rest/postAnnotationsAndGetDocs", consumes = "application/json", produces = "application/json")
+	public NaeListFile postAnnotationsAndGetDocs(HttpServletResponse httpServletResponse, @RequestBody NaeListFile listFileReq) {
+		// this.addHeaders(httpServletResponse);
+		NaeDocPojo docPojo = new NaeDocPojo();
+		NaeListFile listFileResp = docPojo.postAnnotationsAndGetDocs(listFileReq);
 		return listFileResp;
 	}
 
