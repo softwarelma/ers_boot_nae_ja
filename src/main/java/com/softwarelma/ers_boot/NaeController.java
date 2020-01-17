@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.softwarelma.ers_boot.dto.NaeEchoDto;
+import com.softwarelma.ers_boot.dto.NaeListFileDto;
+import com.softwarelma.ers_boot.pojo.NaeDocPojo;
+
 /**
  * see https://spring.io/guides/gs/rest-service-cors/
  */
@@ -22,36 +26,36 @@ public class NaeController {
 
 	@CrossOrigin(origins = CORS_ORIGIN)
 	@GetMapping(path = "/rest/echo/{text}", produces = "application/json")
-	public NaeEcho echo(HttpServletResponse httpServletResponse, @PathVariable String text) {
-		NaeEcho echo = new NaeEcho();
+	public NaeEchoDto echo(HttpServletResponse httpServletResponse, @PathVariable String text) {
+		NaeEchoDto echo = new NaeEchoDto();
 		echo.setText(text);
 		return echo;
 	}
 
 	@CrossOrigin(origins = CORS_ORIGIN)
 	@PostMapping(path = "/rest/postDocsAndGetTexts", consumes = "application/json", produces = "application/json")
-	public NaeListFile postDocsAndGetTexts(HttpServletResponse httpServletResponse, @RequestBody NaeListFile listFileReq) {
+	public NaeListFileDto postDocsAndGetTexts(HttpServletResponse httpServletResponse, @RequestBody NaeListFileDto listFileReq) {
 		// this.addHeaders(httpServletResponse);
 		NaeDocPojo docPojo = new NaeDocPojo();
-		NaeListFile listFileResp = docPojo.postDocsAndGetTexts(listFileReq);
+		NaeListFileDto listFileResp = docPojo.postDocsAndGetTexts(listFileReq);
 		return listFileResp;
 	}
 
 	@CrossOrigin(origins = CORS_ORIGIN)
 	@PostMapping(path = "/rest/postTextsAndGetAnnotations", consumes = "application/json", produces = "application/json")
-	public NaeListFile postTextsAndGetAnnotations(HttpServletResponse httpServletResponse, @RequestBody NaeListFile listFileReq) {
+	public NaeListFileDto postTextsAndGetAnnotations(HttpServletResponse httpServletResponse, @RequestBody NaeListFileDto listFileReq) {
 		// this.addHeaders(httpServletResponse);
 		NaeDocPojo docPojo = new NaeDocPojo();
-		NaeListFile listFileResp = docPojo.postTextsAndGetAnnotations(listFileReq);
+		NaeListFileDto listFileResp = docPojo.postTextsAndGetAnnotations(listFileReq);
 		return listFileResp;
 	}
 
 	@CrossOrigin(origins = CORS_ORIGIN)
 	@PostMapping(path = "/rest/postAnnotationsAndGetDocs", consumes = "application/json", produces = "application/json")
-	public NaeListFile postAnnotationsAndGetDocs(HttpServletResponse httpServletResponse, @RequestBody NaeListFile listFileReq) {
+	public NaeListFileDto postAnnotationsAndGetDocs(HttpServletResponse httpServletResponse, @RequestBody NaeListFileDto listFileReq) {
 		// this.addHeaders(httpServletResponse);
 		NaeDocPojo docPojo = new NaeDocPojo();
-		NaeListFile listFileResp = docPojo.postAnnotationsAndGetDocs(listFileReq);
+		NaeListFileDto listFileResp = docPojo.postAnnotationsAndGetDocs(listFileReq);
 		return listFileResp;
 	}
 

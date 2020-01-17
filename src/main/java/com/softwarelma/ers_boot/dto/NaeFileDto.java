@@ -1,23 +1,23 @@
-package com.softwarelma.ers_boot;
+package com.softwarelma.ers_boot.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NaeFile implements Serializable {
+public class NaeFileDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private String base64;
 	private List<String> listParagraph;
-	private List<NaeAnnotation> listAnnotation;
+	private List<NaeAnnotationDto> listAnnotation;
 	private String name;
 	private String size;
 	private String type;
 	private String lastModifiedDate;
 
-	public NaeFile() {
+	public NaeFileDto() {
 		this.listParagraph = new ArrayList<String>();
-		this.listAnnotation = new ArrayList<NaeAnnotation>();
+		this.listAnnotation = new ArrayList<NaeAnnotationDto>();
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class NaeFile implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		NaeFile other = (NaeFile) obj;
+		NaeFileDto other = (NaeFileDto) obj;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -65,14 +65,14 @@ public class NaeFile implements Serializable {
 			this.listParagraph.addAll(listParagraph);
 	}
 
-	public List<NaeAnnotation> getListAnnotation() {
+	public List<NaeAnnotationDto> getListAnnotation() {
 		if (this.listAnnotation == null)
-			this.listAnnotation = new ArrayList<NaeAnnotation>();
+			this.listAnnotation = new ArrayList<NaeAnnotationDto>();
 		return this.listAnnotation;
 	}
 
-	public void setListAnnotation(List<NaeAnnotation> listAnnotation) {
-		this.listAnnotation = new ArrayList<NaeAnnotation>();
+	public void setListAnnotation(List<NaeAnnotationDto> listAnnotation) {
+		this.listAnnotation = new ArrayList<NaeAnnotationDto>();
 		if (listAnnotation != null)
 			this.listAnnotation.addAll(listAnnotation);
 	}

@@ -1,36 +1,36 @@
-package com.softwarelma.ers_boot;
+package com.softwarelma.ers_boot.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NaeListFile implements Serializable {
+public class NaeListFileDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private List<NaeFile> listFile;
+	private List<NaeFileDto> listFile;
 	private int code;
 	private String error;
 	private String lang;
 
-	public NaeListFile() {
-		this.listFile = new ArrayList<NaeFile>();
+	public NaeListFileDto() {
+		this.listFile = new ArrayList<NaeFileDto>();
 	}
 
-	public NaeListFile(List<NaeFile> listFile, int code, String error, String lang) {
+	public NaeListFileDto(List<NaeFileDto> listFile, int code, String error, String lang) {
 		this.listFile = listFile;
 		this.code = code;
 		this.error = error;
 		this.lang = lang;
 	}
 
-	public List<NaeFile> getListFile() {
+	public List<NaeFileDto> getListFile() {
 		if (this.listFile == null)
-			this.listFile = new ArrayList<NaeFile>();
+			this.listFile = new ArrayList<NaeFileDto>();
 		return this.listFile;
 	}
 
-	public void setListFile(List<NaeFile> listFile) {
-		this.listFile = new ArrayList<NaeFile>();
+	public void setListFile(List<NaeFileDto> listFile) {
+		this.listFile = new ArrayList<NaeFileDto>();
 		if (listFile != null)
 			this.listFile.addAll(listFile);
 	}

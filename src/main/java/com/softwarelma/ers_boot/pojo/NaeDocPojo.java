@@ -1,20 +1,12 @@
-package com.softwarelma.ers_boot;
+package com.softwarelma.ers_boot.pojo;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Base64;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.poi.hwpf.HWPFDocument;
-import org.apache.poi.hwpf.extractor.WordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import com.softwarelma.ers_boot.dto.NaeFileDto;
+import com.softwarelma.ers_boot.dto.NaeListFileDto;
 
 public class NaeDocPojo {
 
@@ -23,9 +15,12 @@ public class NaeDocPojo {
 	// private static final String FILE = "C:\\Users\\guillermo.ellison\\Downloads\\docs\\PASTEN TORO - Irenko Y La Ciudad De Cristal - 2003.DOC";
 	// private static final String FILE_TO_READ = FILE;
 	private static boolean toBase64 = true;
-	private static boolean testBase64 = false;
+	private final NaeDocPojoUser user = new NaeDocPojoUser();
+	private final NaeDocPojoReader reader = new NaeDocPojoReader();
+	private final NaeDocPojoAI ai = new NaeDocPojoAI();
+	private final NaeDocPojoWriter writer = new NaeDocPojoWriter();
 
-	public NaeListFile postDocsAndGetTexts(NaeListFile listFileReq) {
+	public NaeListFileDto postDocsAndGetTexts(NaeListFileDto listFileReq) {
 		logger.log(Level.INFO, "postDocsAndGetTexts - begin");
 		listFileReq = this.validatePostDocsAndGetTexts(listFileReq);
 		if (listFileReq.getError() != null)
@@ -35,10 +30,10 @@ public class NaeDocPojo {
 			// this.readDocxFile2(FILE_TO_READ);
 			// else
 			// this.readDocFile2(FILE_TO_READ);
-			for (NaeFile fileReq : listFileReq.getListFile()) {
-				byte[] arrayByte = this.toArrayByte(fileReq.getBase64());
-				List<String> listParagraph = fileReq.getName().toLowerCase().endsWith("x") ? this.readDocxFile(toBase64, arrayByte)
-						: this.readDocFile(toBase64, arrayByte);
+			for (NaeFileDto fileReq : listFileReq.getListFile()) {
+				byte[] arrayByte = this.reader.toArrayByte(fileReq.getBase64());
+				List<String> listParagraph = fileReq.getName().toLowerCase().endsWith("x") ? this.reader.readDocxFile(toBase64, arrayByte)
+						: this.reader.readDocFile(toBase64, arrayByte);
 				fileReq.setBase64(null);
 				fileReq.setListParagraph(listParagraph);
 			}
@@ -53,32 +48,41 @@ public class NaeDocPojo {
 		return listFileReq;
 	}
 
-	public NaeListFile postTextsAndGetAnnotations(NaeListFile listFileReq) {
-		// TODO
-		// TODO
+	public NaeListFileDto postTextsAndGetAnnotations(NaeListFileDto listFileReq) {
 		logger.log(Level.INFO, "postTextsAndGetAnnotations - begin");
 		listFileReq = this.validatePostTextsAndGetAnnotations(listFileReq);
 		if (listFileReq.getError() != null)
 			return listFileReq;
-		logger.log(Level.SEVERE, "postTextsAndGetAnnotations - error");
-		listFileReq.setError("Non implementato");
+		try {
+			for (NaeFileDto fileReq : listFileReq.getListFile())
+				fileReq.setListAnnotation(this.ai.retrieveListAnnotation(fileReq.getListParagraph()));
+			logger.log(Level.INFO, "postTextsAndGetAnnotations - end");
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "postTextsAndGetAnnotations - error", e);
+			listFileReq.setError("Errore generico. " + e.getClass().getName() + ". " + (e.getMessage() == null ? "" : e.getMessage()));
+		}
 		return listFileReq;
 	}
 
-	public NaeListFile postAnnotationsAndGetDocs(NaeListFile listFileReq) {
-		// TODO
+	public NaeListFileDto postAnnotationsAndGetDocs(NaeListFileDto listFileReq) {
 		logger.log(Level.INFO, "postAnnotationsAndGetDocs - begin");
 		listFileReq = this.validatePostAnnotationsAndGetDocs(listFileReq);
 		if (listFileReq.getError() != null)
 			return listFileReq;
-		logger.log(Level.SEVERE, "postAnnotationsAndGetDocs - error");
-		listFileReq.setError("Non implementato");
+		try {
+			for (NaeFileDto fileReq : listFileReq.getListFile())
+				fileReq.setBase64(this.writer.retrieveBase64Docx(fileReq.getListParagraph(), fileReq.getListAnnotation()));
+			logger.log(Level.INFO, "postAnnotationsAndGetDocs - end");
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "postAnnotationsAndGetDocs - error", e);
+			listFileReq.setError("Errore generico. " + e.getClass().getName() + ". " + (e.getMessage() == null ? "" : e.getMessage()));
+		}
 		return listFileReq;
 	}
 
-	private NaeListFile validateRequestAndList(NaeListFile listFileReq) {
+	private NaeListFileDto validateRequestAndList(NaeListFileDto listFileReq) {
 		if (listFileReq == null) {
-			listFileReq = new NaeListFile();
+			listFileReq = new NaeListFileDto();
 			listFileReq.setError("Request non trovata");
 			return listFileReq;
 		}
@@ -90,12 +94,12 @@ public class NaeDocPojo {
 		return listFileReq;
 	}
 
-	private NaeListFile validatePostDocsAndGetTexts(NaeListFile listFileReq) {
+	private NaeListFileDto validatePostDocsAndGetTexts(NaeListFileDto listFileReq) {
 		listFileReq = this.validateRequestAndList(listFileReq);
 		if (listFileReq.getError() != null)
 			return listFileReq;
 		for (int i = 0; i < listFileReq.getListFile().size(); i++) {
-			NaeFile file = listFileReq.getListFile().get(i);
+			NaeFileDto file = listFileReq.getListFile().get(i);
 			if (file == null) {
 				listFileReq.setError("Non trovato il file nella posizione " + i);
 			} else if (file.getBase64() == null || file.getBase64().isEmpty()) {
@@ -115,12 +119,12 @@ public class NaeDocPojo {
 		return listFileReq;
 	}
 
-	private NaeListFile validatePostTextsAndGetAnnotations(NaeListFile listFileReq) {
+	private NaeListFileDto validatePostTextsAndGetAnnotations(NaeListFileDto listFileReq) {
 		listFileReq = this.validateRequestAndList(listFileReq);
 		if (listFileReq.getError() != null)
 			return listFileReq;
 		for (int i = 0; i < listFileReq.getListFile().size(); i++) {
-			NaeFile file = listFileReq.getListFile().get(i);
+			NaeFileDto file = listFileReq.getListFile().get(i);
 			if (file == null) {
 				listFileReq.setError("Non trovato il file nella posizione " + i);
 			} else if (file.getListParagraph().isEmpty()) {
@@ -140,12 +144,12 @@ public class NaeDocPojo {
 		return listFileReq;
 	}
 
-	private NaeListFile validatePostAnnotationsAndGetDocs(NaeListFile listFileReq) {
+	private NaeListFileDto validatePostAnnotationsAndGetDocs(NaeListFileDto listFileReq) {
 		listFileReq = this.validateRequestAndList(listFileReq);
 		if (listFileReq.getError() != null)
 			return listFileReq;
 		for (int i = 0; i < listFileReq.getListFile().size(); i++) {
-			NaeFile file = listFileReq.getListFile().get(i);
+			NaeFileDto file = listFileReq.getListFile().get(i);
 			if (file == null) {
 				listFileReq.setError("Non trovato il file nella posizione " + i);
 			} else if (file.getListParagraph().isEmpty()) {
@@ -165,90 +169,6 @@ public class NaeDocPojo {
 				return listFileReq;
 		}
 		return listFileReq;
-	}
-
-	private byte[] toArrayByte(String base64) throws UnsupportedEncodingException {
-		return Base64.getDecoder().decode(new String(base64).getBytes("UTF-8"));
-	}
-
-	private String toBase64(String decoded) throws UnsupportedEncodingException {
-		String base64 = new String(Base64.getEncoder().encode(decoded.getBytes()));
-		if (testBase64) {
-			String decoded2 = new String(this.toArrayByte(base64));
-			if (!decoded.equals(decoded2)) {
-				throw new RuntimeException("Invalid coding for: " + decoded);
-			}
-		}
-		return base64;
-	}
-
-	private List<String> readDocFile(boolean toBase64, byte[] arrayByte) throws IOException {
-		List<String> listParagraph = new LinkedList<String>();
-		ByteArrayInputStream bais = new ByteArrayInputStream(arrayByte);
-		// File file = new File(fileName);
-		// FileInputStream fis = new FileInputStream(file.getAbsolutePath());
-		HWPFDocument doc = new HWPFDocument(bais);
-		WordExtractor we = new WordExtractor(doc);
-		String[] paragraphs = we.getParagraphText();
-		System.out.println("Total no of paragraph " + paragraphs.length);
-		for (String para : paragraphs) {
-			String text = toBase64 ? this.toBase64(para) : para;
-			text = text.replace("\r\n", "");
-			text = text.replace("\n", "");
-			listParagraph.add(text);
-		}
-		// fis.close();
-		we.close();
-		// doc.close();
-		return listParagraph;
-	}
-
-	private List<String> readDocxFile(boolean toBase64, byte[] arrayByte) throws IOException {
-		List<String> listParagraph = new LinkedList<String>();
-		ByteArrayInputStream bais = new ByteArrayInputStream(arrayByte);
-		// File file = new File(fileName);
-		// FileInputStream fis = new FileInputStream(file.getAbsolutePath());
-		XWPFDocument document = new XWPFDocument(bais);
-		List<XWPFParagraph> paragraphs = document.getParagraphs();
-		System.out.println("Total no of paragraph " + paragraphs.size());
-		for (XWPFParagraph para : paragraphs) {
-			String text = toBase64 ? this.toBase64(para.getText()) : para.getText();
-			text = text.replace("\r\n", "");
-			text = text.replace("\n", "");
-			listParagraph.add(text);
-		}
-		// fis.close();
-		document.close();
-		return listParagraph;
-	}
-
-	@SuppressWarnings("unused")
-	private void readDocFile2(String fileName) throws IOException {
-		File file = new File(fileName);
-		FileInputStream fis = new FileInputStream(file.getAbsolutePath());
-		HWPFDocument doc = new HWPFDocument(fis);
-		WordExtractor we = new WordExtractor(doc);
-		String[] paragraphs = we.getParagraphText();
-		System.out.println("Total no of paragraph " + paragraphs.length);
-		for (String para : paragraphs) {
-			System.out.println(para.toString());
-		}
-		we.close();
-		// fis.close();
-	}
-
-	@SuppressWarnings("unused")
-	private void readDocxFile2(String fileName) throws IOException {
-		File file = new File(fileName);
-		FileInputStream fis = new FileInputStream(file.getAbsolutePath());
-		XWPFDocument document = new XWPFDocument(fis);
-		List<XWPFParagraph> paragraphs = document.getParagraphs();
-		System.out.println("Total no of paragraph " + paragraphs.size());
-		for (XWPFParagraph para : paragraphs) {
-			System.out.println(para.getText());
-		}
-		// fis.close();
-		document.close();
 	}
 
 }

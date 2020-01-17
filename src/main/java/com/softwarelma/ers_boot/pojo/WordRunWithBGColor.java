@@ -1,4 +1,4 @@
-package com.softwarelma.ers_boot;
+package com.softwarelma.ers_boot.pojo;
 
 import java.io.FileOutputStream;
 

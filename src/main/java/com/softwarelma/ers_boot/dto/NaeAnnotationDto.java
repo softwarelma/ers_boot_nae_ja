@@ -1,8 +1,8 @@
-package com.softwarelma.ers_boot;
+package com.softwarelma.ers_boot.dto;
 
 import java.io.Serializable;
 
-public class NaeAnnotation implements Serializable {
+public class NaeAnnotationDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private int parag;
@@ -10,10 +10,10 @@ public class NaeAnnotation implements Serializable {
 	private int end;
 	private String mark;
 
-	public NaeAnnotation() {
+	public NaeAnnotationDto() {
 	}
 
-	public NaeAnnotation(int parag, int begin, int end, String mark) {
+	public NaeAnnotationDto(int parag, int begin, int end, String mark) {
 		super();
 		this.parag = parag;
 		this.begin = begin;
