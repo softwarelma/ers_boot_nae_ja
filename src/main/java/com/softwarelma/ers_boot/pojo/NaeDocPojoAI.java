@@ -46,22 +46,25 @@ public class NaeDocPojoAI {
 		return this.retrieveMarkByCode(code);
 	}
 
+	/**
+	 * colors from: http://hex.wikimix.info/en/color-0203e2
+	 */
 	private String retrieveMarkByCode(int code) {
 		switch (code) {
 		case 0:
-			return "grey";
+			return "#bc13fe";// neon purple
 		case 1:
-			return "red";
+			return "#7b0323";// wine red
 		case 2:
-			return "orange";
+			return "#fe420f";// orangered
 		case 3:
-			return "yellow";
+			return "#cfff04";// neon yellow
 		case 4:
-			return "green";
+			return "#089404";// true green
 		case 5:
-			return "blue";
+			return "#0203e2";// pure blue
 		case 6:
-			return "brown";
+			return "#8b3103";// rust brown
 		default:
 			throw new RuntimeException("Mark code non valido");
 		}

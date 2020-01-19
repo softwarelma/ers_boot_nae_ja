@@ -10,6 +10,7 @@ public class NaeFileDto implements Serializable {
 	private String base64;
 	private List<String> listParagraph;
 	private List<NaeAnnotationDto> listAnnotation;
+	private String charset;
 	private String name;
 	private String size;
 	private String type;
@@ -75,6 +76,14 @@ public class NaeFileDto implements Serializable {
 		this.listAnnotation = new ArrayList<NaeAnnotationDto>();
 		if (listAnnotation != null)
 			this.listAnnotation.addAll(listAnnotation);
+	}
+
+	public String getCharset() {
+		return charset;
+	}
+
+	public void setCharset(String charset) {
+		this.charset = charset;
 	}
 
 	public String getName() {

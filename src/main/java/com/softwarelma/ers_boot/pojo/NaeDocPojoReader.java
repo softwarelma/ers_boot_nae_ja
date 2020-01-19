@@ -4,8 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,24 +14,7 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 
 public class NaeDocPojoReader {
 
-	private static boolean testBase64 = false;
-
-	public byte[] toArrayByte(String base64) throws UnsupportedEncodingException {
-		return Base64.getDecoder().decode(new String(base64).getBytes("UTF-8"));
-	}
-
-	private String toBase64(String decoded) throws UnsupportedEncodingException {
-		String base64 = new String(Base64.getEncoder().encode(decoded.getBytes()));
-		if (testBase64) {
-			String decoded2 = new String(this.toArrayByte(base64));
-			if (!decoded.equals(decoded2)) {
-				throw new RuntimeException("Invalid coding for: " + decoded);
-			}
-		}
-		return base64;
-	}
-
-	public List<String> readDocFile(boolean toBase64, byte[] arrayByte) throws IOException {
+	public List<String> readDocFile(byte[] arrayByte) throws IOException {
 		List<String> listParagraph = new LinkedList<String>();
 		ByteArrayInputStream bais = new ByteArrayInputStream(arrayByte);
 		// File file = new File(fileName);
@@ -41,12 +22,10 @@ public class NaeDocPojoReader {
 		HWPFDocument doc = new HWPFDocument(bais);
 		WordExtractor we = new WordExtractor(doc);
 		String[] paragraphs = we.getParagraphText();
-		System.out.println("Total no of paragraph " + paragraphs.length);
+		// System.out.println("Total no of paragraph " + paragraphs.length);
 		for (String para : paragraphs) {
-			String text = toBase64 ? this.toBase64(para) : para;
-			text = text.replace("\r\n", "");
-			text = text.replace("\n", "");
-			listParagraph.add(text);
+			para = para.replace("\r\n", "").replace("\n", "");
+			listParagraph.add(para);
 		}
 		// fis.close();
 		we.close();
@@ -54,7 +33,7 @@ public class NaeDocPojoReader {
 		return listParagraph;
 	}
 
-	public List<String> readDocxFile(boolean toBase64, byte[] arrayByte) throws IOException {
+	public List<String> readDocxFile(byte[] arrayByte) throws IOException {
 		List<String> listParagraph = new LinkedList<String>();
 		ByteArrayInputStream bais = new ByteArrayInputStream(arrayByte);
 		// File file = new File(fileName);
@@ -63,9 +42,7 @@ public class NaeDocPojoReader {
 		List<XWPFParagraph> paragraphs = document.getParagraphs();
 		System.out.println("Total no of paragraph " + paragraphs.size());
 		for (XWPFParagraph para : paragraphs) {
-			String text = toBase64 ? this.toBase64(para.getText()) : para.getText();
-			text = text.replace("\r\n", "");
-			text = text.replace("\n", "");
+			String text = para.getText().replace("\r\n", "").replace("\n", "");
 			listParagraph.add(text);
 		}
 		// fis.close();
