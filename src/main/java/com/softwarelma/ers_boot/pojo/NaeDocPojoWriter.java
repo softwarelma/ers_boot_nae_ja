@@ -18,9 +18,9 @@ public class NaeDocPojoWriter {
 
 	public String retrieveBase64Docx(List<String> listParagraph, List<NaeAnnotationDto> listAnnotation) throws IOException {
 		XWPFDocument doc = new XWPFDocument();
-		for (int i = 0; i < listParagraph.size(); i++) {
-			List<NaeAnnotationDto> listAnnotationByParagraph = retrieveListAnnotationByParagraph(i, listAnnotation);
-			this.addParagraphWithAnnotations(i, doc, listParagraph.get(i), listAnnotationByParagraph);
+		for (int paragInd = 0; paragInd < listParagraph.size(); paragInd++) {
+			List<NaeAnnotationDto> listAnnotationByParagraph = retrieveListAnnotationByParagraph(paragInd, listAnnotation);
+			this.addParagraphWithAnnotations(paragInd, doc, listParagraph.get(paragInd), listAnnotationByParagraph);
 		}
 		// doc.write(new FileOutputStream("C:\\Users\\guillermo.ellison\\Downloads\\WordRunWithBGColor.docx"));
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -28,15 +28,16 @@ public class NaeDocPojoWriter {
 		return new String(Base64.getMimeEncoder().encode(baos.toByteArray()));
 	}
 
-	private void addParagraphWithAnnotations(int paragInd, XWPFDocument doc, String paragraph, List<NaeAnnotationDto> listAnnotation) {
-		this.validateParagraph(paragInd, paragraph, listAnnotation);
+	private void addParagraphWithAnnotations(int paragInd, XWPFDocument doc, String paragraph, List<NaeAnnotationDto> listAnnotationByParagraph) {
+		this.validateParagraph(paragInd, paragraph, listAnnotationByParagraph);
 		if (paragraph == null || paragraph.trim().isEmpty())
 			return;
+		paragraph = NaeDocPojo.clean4WritingParagraph(paragraph, listAnnotationByParagraph);
 		XWPFParagraph docParagraph = doc.createParagraph();
 		int insertInd = 0;
-		for (int ann = 0; ann < listAnnotation.size(); ann++) {
-			NaeAnnotationDto annotation = listAnnotation.get(ann);
-			insertInd = this.addAnnotation(docParagraph, paragInd, insertInd, paragraph, annotation, ann == listAnnotation.size() - 1);
+		for (int ann = 0; ann < listAnnotationByParagraph.size(); ann++) {
+			NaeAnnotationDto annotation = listAnnotationByParagraph.get(ann);
+			insertInd = this.addAnnotation(docParagraph, paragInd, insertInd, paragraph, annotation, ann == listAnnotationByParagraph.size() - 1);
 		}
 	}
 

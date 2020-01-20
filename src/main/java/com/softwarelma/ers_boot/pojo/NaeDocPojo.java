@@ -21,65 +21,40 @@ public class NaeDocPojo {
 	// private static final String FILE_TO_READ = FILE;
 	private static boolean testBase64 = false;
 	private static boolean toBase64 = true;
+	private static boolean contractAnnotations = true;
 	private final NaeDocPojoUser user = new NaeDocPojoUser();
 	private final NaeDocPojoReader reader = new NaeDocPojoReader();
 	private final NaeDocPojoAI ai = new NaeDocPojoAI();
 	private final NaeDocPojoWriter writer = new NaeDocPojoWriter();
 
-	public static final String charset1Amp = "&amp;";
-	public static final String charset2Common = //
-			"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXY0123456789\\!|\"'·$%()[]{}<>=?¿^*+-/_.,:;çÇ";
-	public static final Map<Character, String> charset3MapSpecial = new HashMap<>();
-	static {
-		charset3MapSpecial.put('\u00F1', "&ntilde;");
-		charset3MapSpecial.put('\u00D1', "&Ntilde;");
-		charset3MapSpecial.put('\u00E7', "&ccedil;");
-		charset3MapSpecial.put('\u00C7', "&Ccedil;");
-
-		charset3MapSpecial.put('\u00E1', "&aacute;");
-		charset3MapSpecial.put('\u00E9', "&eacute;");
-		charset3MapSpecial.put('\u00ED', "&iacute;");
-		charset3MapSpecial.put('\u00F3', "&oacute;");
-		charset3MapSpecial.put('\u00FA', "&uacute;");
-		charset3MapSpecial.put('\u00C1', "&Aacute;");
-		charset3MapSpecial.put('\u00C9', "&Eacute;");
-		charset3MapSpecial.put('\u00CD', "&Iacute;");
-		charset3MapSpecial.put('\u00D3', "&Oacute;");
-		charset3MapSpecial.put('\u00DA', "&Uacute;");
-
-		charset3MapSpecial.put('\u00E0', "&agrave;");
-		charset3MapSpecial.put('\u00E8', "&egrave;");
-		charset3MapSpecial.put('\u00EC', "&igrave;");
-		charset3MapSpecial.put('\u00F2', "&ograve;");
-		charset3MapSpecial.put('\u00F9', "&ugrave;");
-		charset3MapSpecial.put('\u00C0', "&Agrave;");
-		charset3MapSpecial.put('\u00C8', "&Egrave;");
-		charset3MapSpecial.put('\u00CC', "&Igrave;");
-		charset3MapSpecial.put('\u00D2', "&Ograve;");
-		charset3MapSpecial.put('\u00D9', "&Ugrave;");
-
-		charset3MapSpecial.put('\u00E4', "&auml;");
-		charset3MapSpecial.put('\u00EB', "&euml;");
-		charset3MapSpecial.put('\u00EF', "&iuml;");
-		charset3MapSpecial.put('\u00F6', "&ouml;");
-		charset3MapSpecial.put('\u00FC', "&uuml;");
-		charset3MapSpecial.put('\u00C4', "&Auml;");
-		charset3MapSpecial.put('\u00CB', "&Euml;");
-		charset3MapSpecial.put('\u00CF', "&Iuml;");
-		charset3MapSpecial.put('\u00D6', "&Ouml;");
-		charset3MapSpecial.put('\u00DC', "&Uuml;");
-
-		charset3MapSpecial.put('\u00E2', "&acirc;");
-		charset3MapSpecial.put('\u00EA', "&ecirc;");
-		charset3MapSpecial.put('\u00EE', "&icirc;");
-		charset3MapSpecial.put('\u00F4', "&ocirc;");
-		charset3MapSpecial.put('\u00FB', "&ucirc;");
-		charset3MapSpecial.put('\u00C2', "&Acirc;");
-		charset3MapSpecial.put('\u00CA', "&Ecirc;");
-		charset3MapSpecial.put('\u00CE', "&Icirc;");
-		charset3MapSpecial.put('\u00D4', "&Ocirc;");
-		charset3MapSpecial.put('\u00DB', "&Ucirc;");
-	}
+	private static final String charset1Amp = "&amp;";
+	private static final String charset2Common = //
+			" \tabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789¡!¿?\"'·$%()[]{}<>=^*+-/\\|_.,:;çÇ";
+	private static final Map<Character, String> charset3MapSpecial_22 = new HashMap<>();
+	/*
+	 * static { charset3MapSpecial.put('\u00F1', "&ntilde;"); charset3MapSpecial.put('\u00D1', "&Ntilde;"); charset3MapSpecial.put('\u00E7', "&ccedil;");
+	 * charset3MapSpecial.put('\u00C7', "&Ccedil;");
+	 * 
+	 * charset3MapSpecial.put('\u00E1', "&aacute;"); charset3MapSpecial.put('\u00E9', "&eacute;"); charset3MapSpecial.put('\u00ED', "&iacute;");
+	 * charset3MapSpecial.put('\u00F3', "&oacute;"); charset3MapSpecial.put('\u00FA', "&uacute;"); charset3MapSpecial.put('\u00C1', "&Aacute;");
+	 * charset3MapSpecial.put('\u00C9', "&Eacute;"); charset3MapSpecial.put('\u00CD', "&Iacute;"); charset3MapSpecial.put('\u00D3', "&Oacute;");
+	 * charset3MapSpecial.put('\u00DA', "&Uacute;");
+	 * 
+	 * charset3MapSpecial.put('\u00E0', "&agrave;"); charset3MapSpecial.put('\u00E8', "&egrave;"); charset3MapSpecial.put('\u00EC', "&igrave;");
+	 * charset3MapSpecial.put('\u00F2', "&ograve;"); charset3MapSpecial.put('\u00F9', "&ugrave;"); charset3MapSpecial.put('\u00C0', "&Agrave;");
+	 * charset3MapSpecial.put('\u00C8', "&Egrave;"); charset3MapSpecial.put('\u00CC', "&Igrave;"); charset3MapSpecial.put('\u00D2', "&Ograve;");
+	 * charset3MapSpecial.put('\u00D9', "&Ugrave;");
+	 * 
+	 * charset3MapSpecial.put('\u00E4', "&auml;"); charset3MapSpecial.put('\u00EB', "&euml;"); charset3MapSpecial.put('\u00EF', "&iuml;");
+	 * charset3MapSpecial.put('\u00F6', "&ouml;"); charset3MapSpecial.put('\u00FC', "&uuml;"); charset3MapSpecial.put('\u00C4', "&Auml;");
+	 * charset3MapSpecial.put('\u00CB', "&Euml;"); charset3MapSpecial.put('\u00CF', "&Iuml;"); charset3MapSpecial.put('\u00D6', "&Ouml;");
+	 * charset3MapSpecial.put('\u00DC', "&Uuml;");
+	 * 
+	 * charset3MapSpecial.put('\u00E2', "&acirc;"); charset3MapSpecial.put('\u00EA', "&ecirc;"); charset3MapSpecial.put('\u00EE', "&icirc;");
+	 * charset3MapSpecial.put('\u00F4', "&ocirc;"); charset3MapSpecial.put('\u00FB', "&ucirc;"); charset3MapSpecial.put('\u00C2', "&Acirc;");
+	 * charset3MapSpecial.put('\u00CA', "&Ecirc;"); charset3MapSpecial.put('\u00CE', "&Icirc;"); charset3MapSpecial.put('\u00D4', "&Ocirc;");
+	 * charset3MapSpecial.put('\u00DB', "&Ucirc;"); }
+	 */
 
 	public NaeListFileDto postDocsAndGetTexts(NaeListFileDto listFileReq) {
 		logger.log(Level.INFO, "postDocsAndGetTexts - begin");
@@ -136,7 +111,6 @@ public class NaeDocPojo {
 			return listFileReq;
 		try {
 			for (NaeFileDto fileReq : listFileReq.getListFile()) {
-				this.clean4WritingListParagraph(fileReq.getListParagraph());
 				fileReq.setBase64(this.writer.retrieveBase64Docx(fileReq.getListParagraph(), fileReq.getListAnnotation()));
 			}
 			logger.log(Level.INFO, "postAnnotationsAndGetDocs - end");
@@ -175,7 +149,8 @@ public class NaeDocPojo {
 		List<NaeAnnotationDto> listAnnotationClean = new ArrayList<>();
 		for (int i = 0; i < listParagraph.size(); i++) {
 			String paragraph = listParagraph.get(i);
-			List<int[]> listEncodingIntervals = this.retrieveListEncodingIntervals(paragraph);
+			List<int[]> listEncodingIntervals = new ArrayList<>();
+			this.retrieveListEncodingIntervals(paragraph, listEncodingIntervals, null);
 			List<NaeAnnotationDto> listAnnotationPar = NaeDocPojoWriter.retrieveListAnnotationByParagraph(i, listAnnotation);
 			listAnnotationClean.addAll(this.cleanListAnnotationParagraph(listEncodingIntervals, listAnnotationPar));
 		}
@@ -191,13 +166,13 @@ public class NaeDocPojo {
 	}
 
 	private boolean isCleanAnnotation(List<int[]> listEncodingIntervals, NaeAnnotationDto annotation) {
-		int nextValid = 0;
+		// int nextValid = 0;
 		boolean found = false;
 		for (int i = 0; i < listEncodingIntervals.size(); i++) {
-			nextValid = i;
+			// nextValid = i;
 			int[] interval = listEncodingIntervals.get(i);
 			if (annotation.getEnd() <= interval[0]) { // annotation before
-				break;
+				continue;
 			} else if (interval[1] <= annotation.getBegin()) {// annotation after
 				continue;
 			} else {// collision
@@ -205,20 +180,47 @@ public class NaeDocPojo {
 				break;
 			}
 		}
-		for (int i = 0; i < nextValid; i++)
-			listEncodingIntervals.remove(0);
+		// for (int i = 0; i < nextValid; i++)
+		// listEncodingIntervals.remove(0);//non possible, not ordered
 		return !found;
 	}
 
-	private List<int[]> retrieveListEncodingIntervals(String paragraph) {
-		List<int[]> listEncodingIntervals = new ArrayList<>();
-		listEncodingIntervals.addAll(this.retrieveListIntervals(paragraph, charset1Amp));
-		for (char c : charset3MapSpecial.keySet()) {
-			String s = charset3MapSpecial.get(c);
-			listEncodingIntervals.addAll(this.retrieveListIntervals(paragraph, s));
+	private static void retrieveListEncodingIntervals(String paragraph, List<int[]> listEncodingIntervals, Map<Character, String> charset3MapSpecial) {
+		int fromIndex = 0;
+		int ind;
+		while ((ind = paragraph.indexOf("&#", fromIndex)) != -1) {
+			fromIndex = ind + 2;
+			ind = paragraph.indexOf(";", fromIndex);
+			if (ind == -1)
+				continue;
+			String num = paragraph.substring(fromIndex, ind);
+			while (num.startsWith("0"))
+				num = num.substring(1);
+			int n;
+			try {
+				n = Integer.parseInt(num);
+				if ((n + "").length() > 5)
+					continue;
+			} catch (NumberFormatException e) {
+				continue;
+			}
+			if (listEncodingIntervals != null)
+				listEncodingIntervals.add(new int[] { fromIndex - 2, ind + 1 });
+			fromIndex = ind + 1;
+			if (charset3MapSpecial != null)
+				charset3MapSpecial.put((char) n, "&#" + n + ";");
 		}
-		return listEncodingIntervals;
 	}
+
+	// private List<int[]> retrieveListEncodingIntervals2(String paragraph) {
+	// List<int[]> listEncodingIntervals = new ArrayList<>();
+	// listEncodingIntervals.addAll(this.retrieveListIntervals(paragraph, charset1Amp));
+	// for (char c : charset3MapSpecial.keySet()) {
+	// String s = charset3MapSpecial.get(c);
+	// listEncodingIntervals.addAll(this.retrieveListIntervals(paragraph, s));
+	// }
+	// return listEncodingIntervals;
+	// }
 
 	private List<int[]> retrieveListIntervals(String text, String subtext) {
 		List<int[]> listIntervals = new ArrayList<>();
@@ -231,18 +233,48 @@ public class NaeDocPojo {
 		return listIntervals;
 	}
 
-	private void clean4WritingListParagraph(List<String> listParagraph) {
-		for (int i = 0; i < listParagraph.size(); i++)
-			listParagraph.set(i, this.clean4WritingParagraph(listParagraph.get(i)));
+	/**
+	 * <pre>
+	 * public static void clean4WritingListParagraph(List<String> listParagraph) {
+	 * 	for (int i = 0; i < listParagraph.size(); i++)
+	 * 		listParagraph.set(i, clean4WritingParagraph(listParagraph.get(i)));
+	 * }
+	 * </pre>
+	 */
+	public static String clean4WritingParagraph(String paragraph, List<NaeAnnotationDto> listAnnotationByParagraph) {
+		Map<Character, String> charset3MapSpecial = new HashMap<>();
+		retrieveListEncodingIntervals(paragraph, null, charset3MapSpecial);
+		for (char replacement : charset3MapSpecial.keySet()) {
+			String target = charset3MapSpecial.get(replacement);
+			paragraph = clean4WritingParagraphByTarget(paragraph, listAnnotationByParagraph, target, replacement);
+		}
+		paragraph = clean4WritingParagraphByTarget(paragraph, listAnnotationByParagraph, charset1Amp, '&');
+		return paragraph;
 	}
 
-	private String clean4WritingParagraph(String paragraph) {
-		for (char c : charset3MapSpecial.keySet()) {
-			String s = charset3MapSpecial.get(c);
-			paragraph = paragraph.replace(s, c + "");
+	private static String clean4WritingParagraphByTarget(String paragraph, List<NaeAnnotationDto> listAnnotationByParagraph, String target, char replacement) {
+		int ind;
+		while ((ind = paragraph.indexOf(target)) != -1) {
+			paragraph = paragraph.replaceFirst(target, replacement + "");
+			clean4WritingParagraphByTargetByListAnnotation(listAnnotationByParagraph, target, ind);
 		}
-		paragraph = paragraph.replace(charset1Amp, "&");
 		return paragraph;
+	}
+
+	private static void clean4WritingParagraphByTargetByListAnnotation(List<NaeAnnotationDto> listAnnotationByParagraph, String target, int ind) {
+		if (!contractAnnotations)
+			return;
+		List<NaeAnnotationDto> listAnnotationByParagraphRet = new ArrayList<>();
+		for (NaeAnnotationDto annotation : listAnnotationByParagraph) {
+			if (annotation.getBegin() > ind)
+				annotation.setBegin(annotation.getBegin() - (target.length() - 1));
+			if (annotation.getEnd() > ind)
+				annotation.setEnd(annotation.getEnd() - (target.length() - 1));
+			if (annotation.getBegin() > -1 && annotation.getBegin() < annotation.getEnd())
+				listAnnotationByParagraphRet.add(annotation);
+		}
+		listAnnotationByParagraph.clear();
+		listAnnotationByParagraph.addAll(listAnnotationByParagraphRet);
 	}
 
 	private void clean4ReadingListParagraph(List<String> listParagraph) {
@@ -261,10 +293,11 @@ public class NaeDocPojo {
 	private String clean4ReadingChar(char c) {
 		if (charset2Common.contains(c + "")) {
 			return c + "";
-		} else if (charset3MapSpecial.containsKey(c)) {
-			return charset3MapSpecial.get(c);
+			// } else if (charset3MapSpecial.containsKey(c)) {
+			// return charset3MapSpecial.get(c);
 		} else {
-			return c + "";// TODO throw exception
+			// System.out.println("clean4ReadingChar, char=" + c + ", int=" + ((int) c));
+			return "&#" + ((int) c) + ";";
 		}
 	}
 

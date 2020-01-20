@@ -7,6 +7,25 @@ import com.softwarelma.ers_boot.dto.NaeAnnotationDto;
 
 public class NaeDocPojoAI {
 
+	public List<NaeAnnotationDto> retrieveListAnnotationFake(List<String> listParagraph) {
+		List<NaeAnnotationDto> listAnnotation = new ArrayList<NaeAnnotationDto>();
+		NaeAnnotationDto annotation = new NaeAnnotationDto();
+		annotation.setBegin(112);
+		annotation.setEnd(156);
+		annotation.setParag(this.retrieveParagraph(listParagraph));
+		annotation.setMark("#cfff04");
+		listAnnotation.add(annotation);
+		return listAnnotation;
+	}
+
+	private int retrieveParagraph(List<String> listParagraph) {
+		for (int par = 0; par < listParagraph.size(); par++) {
+			if (listParagraph.get(par).contains("Mi regreso a casa fue algo nuevo, algo como para observar, con la camiseta llena de basura en mi pecho que"))
+				return par;
+		}
+		throw new RuntimeException("paragraph not found");
+	}
+
 	public List<NaeAnnotationDto> retrieveListAnnotation(List<String> listParagraph) {
 		List<NaeAnnotationDto> listAnnotation = new ArrayList<NaeAnnotationDto>();
 		for (int i = 0; i < listParagraph.size(); i++) {
