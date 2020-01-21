@@ -29,7 +29,7 @@ public class NaeDocPojo {
 
 	private static final String charset1Amp = "&amp;";
 	private static final String charset2Common = //
-			" \tabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789¡!¿?\"'·$%()[]{}<>=^*+-/\\|_.,:;çÇ";
+			" \tabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?\"'$%()[]{}<>=*+-/\\|_.,:;";
 	private static final Map<Character, String> charset3MapSpecial_22 = new HashMap<>();
 	/*
 	 * static { charset3MapSpecial.put('\u00F1', "&ntilde;"); charset3MapSpecial.put('\u00D1', "&Ntilde;"); charset3MapSpecial.put('\u00E7', "&ccedil;");
@@ -243,12 +243,14 @@ public class NaeDocPojo {
 	 */
 	public static String clean4WritingParagraph(String paragraph, List<NaeAnnotationDto> listAnnotationByParagraph) {
 		Map<Character, String> charset3MapSpecial = new HashMap<>();
+		// System.out.println(paragraph);
 		retrieveListEncodingIntervals(paragraph, null, charset3MapSpecial);
 		for (char replacement : charset3MapSpecial.keySet()) {
 			String target = charset3MapSpecial.get(replacement);
 			paragraph = clean4WritingParagraphByTarget(paragraph, listAnnotationByParagraph, target, replacement);
 		}
 		paragraph = clean4WritingParagraphByTarget(paragraph, listAnnotationByParagraph, charset1Amp, '&');
+		// System.out.println(paragraph);
 		return paragraph;
 	}
 
@@ -287,6 +289,8 @@ public class NaeDocPojo {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < paragraph.length(); i++)
 			sb.append(this.clean4ReadingChar(paragraph.charAt(i)));
+		// System.out.println(paragraph);
+		// System.out.println(sb);
 		return sb.toString();
 	}
 

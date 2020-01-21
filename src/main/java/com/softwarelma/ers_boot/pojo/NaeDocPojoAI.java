@@ -38,6 +38,7 @@ public class NaeDocPojoAI {
 	}
 
 	private List<NaeAnnotationDto> retrieveListAnnotationByParagraph(String paragraph, int parIndex) {
+		// System.out.println(paragraph);
 		List<NaeAnnotationDto> listAnnotation = new ArrayList<NaeAnnotationDto>();
 		int begin = (int) (Math.random() * (double) paragraph.length());
 		int end = (int) (Math.random() * (double) paragraph.length());

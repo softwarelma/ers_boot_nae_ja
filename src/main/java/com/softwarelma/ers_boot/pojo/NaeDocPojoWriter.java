@@ -30,10 +30,13 @@ public class NaeDocPojoWriter {
 
 	private void addParagraphWithAnnotations(int paragInd, XWPFDocument doc, String paragraph, List<NaeAnnotationDto> listAnnotationByParagraph) {
 		this.validateParagraph(paragInd, paragraph, listAnnotationByParagraph);
-		if (paragraph == null || paragraph.trim().isEmpty())
-			return;
-		paragraph = NaeDocPojo.clean4WritingParagraph(paragraph, listAnnotationByParagraph);
 		XWPFParagraph docParagraph = doc.createParagraph();
+		paragraph = NaeDocPojo.clean4WritingParagraph(paragraph, listAnnotationByParagraph);
+		if (paragraph == null || paragraph.trim().isEmpty() || listAnnotationByParagraph.isEmpty()) {
+			XWPFRun run = docParagraph.createRun();
+			run.setText(paragraph == null ? "" : paragraph);
+			return;
+		}
 		int insertInd = 0;
 		for (int ann = 0; ann < listAnnotationByParagraph.size(); ann++) {
 			NaeAnnotationDto annotation = listAnnotationByParagraph.get(ann);
