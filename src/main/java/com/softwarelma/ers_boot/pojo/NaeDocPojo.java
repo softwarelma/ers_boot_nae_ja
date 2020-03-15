@@ -30,31 +30,6 @@ public class NaeDocPojo {
 	private static final String charset1Amp = "&amp;";
 	private static final String charset2Common = //
 			" \tabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?\"'$%()[]{}<>=*+-/\\|_.,:;";
-	private static final Map<Character, String> charset3MapSpecial_22 = new HashMap<>();
-	/*
-	 * static { charset3MapSpecial.put('\u00F1', "&ntilde;"); charset3MapSpecial.put('\u00D1', "&Ntilde;"); charset3MapSpecial.put('\u00E7', "&ccedil;");
-	 * charset3MapSpecial.put('\u00C7', "&Ccedil;");
-	 * 
-	 * charset3MapSpecial.put('\u00E1', "&aacute;"); charset3MapSpecial.put('\u00E9', "&eacute;"); charset3MapSpecial.put('\u00ED', "&iacute;");
-	 * charset3MapSpecial.put('\u00F3', "&oacute;"); charset3MapSpecial.put('\u00FA', "&uacute;"); charset3MapSpecial.put('\u00C1', "&Aacute;");
-	 * charset3MapSpecial.put('\u00C9', "&Eacute;"); charset3MapSpecial.put('\u00CD', "&Iacute;"); charset3MapSpecial.put('\u00D3', "&Oacute;");
-	 * charset3MapSpecial.put('\u00DA', "&Uacute;");
-	 * 
-	 * charset3MapSpecial.put('\u00E0', "&agrave;"); charset3MapSpecial.put('\u00E8', "&egrave;"); charset3MapSpecial.put('\u00EC', "&igrave;");
-	 * charset3MapSpecial.put('\u00F2', "&ograve;"); charset3MapSpecial.put('\u00F9', "&ugrave;"); charset3MapSpecial.put('\u00C0', "&Agrave;");
-	 * charset3MapSpecial.put('\u00C8', "&Egrave;"); charset3MapSpecial.put('\u00CC', "&Igrave;"); charset3MapSpecial.put('\u00D2', "&Ograve;");
-	 * charset3MapSpecial.put('\u00D9', "&Ugrave;");
-	 * 
-	 * charset3MapSpecial.put('\u00E4', "&auml;"); charset3MapSpecial.put('\u00EB', "&euml;"); charset3MapSpecial.put('\u00EF', "&iuml;");
-	 * charset3MapSpecial.put('\u00F6', "&ouml;"); charset3MapSpecial.put('\u00FC', "&uuml;"); charset3MapSpecial.put('\u00C4', "&Auml;");
-	 * charset3MapSpecial.put('\u00CB', "&Euml;"); charset3MapSpecial.put('\u00CF', "&Iuml;"); charset3MapSpecial.put('\u00D6', "&Ouml;");
-	 * charset3MapSpecial.put('\u00DC', "&Uuml;");
-	 * 
-	 * charset3MapSpecial.put('\u00E2', "&acirc;"); charset3MapSpecial.put('\u00EA', "&ecirc;"); charset3MapSpecial.put('\u00EE', "&icirc;");
-	 * charset3MapSpecial.put('\u00F4', "&ocirc;"); charset3MapSpecial.put('\u00FB', "&ucirc;"); charset3MapSpecial.put('\u00C2', "&Acirc;");
-	 * charset3MapSpecial.put('\u00CA', "&Ecirc;"); charset3MapSpecial.put('\u00CE', "&Icirc;"); charset3MapSpecial.put('\u00D4', "&Ocirc;");
-	 * charset3MapSpecial.put('\u00DB', "&Ucirc;"); }
-	 */
 
 	public NaeListFileDto postDocsAndGetTexts(NaeListFileDto listFileReq) {
 		logger.log(Level.INFO, "postDocsAndGetTexts - begin");
@@ -149,8 +124,10 @@ public class NaeDocPojo {
 		List<NaeAnnotationDto> listAnnotationClean = new ArrayList<>();
 		for (int i = 0; i < listParagraph.size(); i++) {
 			String paragraph = listParagraph.get(i);
+			if (paragraph.equals("&nbsp;"))
+				continue;
 			List<int[]> listEncodingIntervals = new ArrayList<>();
-			this.retrieveListEncodingIntervals(paragraph, listEncodingIntervals, null);
+			retrieveListEncodingIntervals(paragraph, listEncodingIntervals, null);
 			List<NaeAnnotationDto> listAnnotationPar = NaeDocPojoWriter.retrieveListAnnotationByParagraph(i, listAnnotation);
 			listAnnotationClean.addAll(this.cleanListAnnotationParagraph(listEncodingIntervals, listAnnotationPar));
 		}
@@ -291,7 +268,10 @@ public class NaeDocPojo {
 			sb.append(this.clean4ReadingChar(paragraph.charAt(i)));
 		// System.out.println(paragraph);
 		// System.out.println(sb);
-		return sb.toString();
+		String ret = sb.toString();
+		ret = ret.replace("&#1;", "&nbsp;");
+		ret = ret.replace("&#12;", "&nbsp;");
+		return ret == null || ret.trim().isEmpty() ? "&nbsp;" : ret;
 	}
 
 	private String clean4ReadingChar(char c) {
